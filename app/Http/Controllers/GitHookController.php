@@ -2,8 +2,6 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 class GitHookController extends Controller
 {
     public function handle(Request $request)
@@ -12,7 +10,6 @@ class GitHookController extends Controller
             return response()->json(['message' => 'Update is already in progress. Please try again later.'], 423);
         }
         $this->lockUpdate();
-
         try {
             $secretKey = $request->input('secret_key');
             if ($secretKey !== config('app.git_secret_key')) {
@@ -47,11 +44,11 @@ class GitHookController extends Controller
     }
     private function switchToMainBranch()
     {
-        exec('git checkout main 2>&1', $output, $exitCode);
+        exec('git checkout master 2>&1', $output, $exitCode);
         if ($exitCode !== 0) {
-            throw new \Exception("Failed to switch to main branch: " . implode("\n", $output));
+            throw new \Exception("Failed to switch to master branch: " . implode("\n", $output));
         }
-        Log::info("Switched to main branch");
+        Log::info("Switched to master branch");
     }
     private function discardChanges()
     {
@@ -63,7 +60,7 @@ class GitHookController extends Controller
     }
     private function pullLatestChanges()
     {
-        exec('git pull origin main 2>&1', $output, $exitCode);
+        exec('git pull origin master 2>&1', $output, $exitCode);
         if ($exitCode !== 0) {
             throw new \Exception("Failed to pull latest changes: " . implode("\n", $output));
         }
