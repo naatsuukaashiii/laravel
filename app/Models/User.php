@@ -4,6 +4,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
@@ -58,9 +59,10 @@ class User extends Authenticatable
     public function generateTwoFactorCode()
     {
         $code = rand(100000, 999999);
+        $expirationMinutes = (int)config('app.two_factor_code_expiration');
         $this->update([
             'two_factor_code' => $code,
-            'two_factor_expires_at' => now()->addMinutes(10),
+            'two_factor_expires_at' => now()->addMinutes($expirationMinutes),
             'two_factor_attempts' => 0,
         ]);
         return $code;
