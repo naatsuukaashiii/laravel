@@ -38,6 +38,7 @@ class PermissionSeeder extends Seeder
             'get-list-log-request' => 'Get list of log requests',
             'read-log-request' => 'Read specific log request',
             'delete-log-request' => 'Delete specific log request',
+            'admin-access' => 'Administrator access',
         ];
         foreach ($specificPermissions as $code => $name) {
             Permission::create([

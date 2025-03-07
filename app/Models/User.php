@@ -78,4 +78,8 @@ class User extends Authenticatable
     {
         return $this->two_factor_code === $code && now()->lessThan($this->two_factor_expires_at);
     }
+    public function logRequests()
+    {
+        return $this->hasMany(LogRequest::class, 'user_id');
+    }
 }

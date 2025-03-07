@@ -105,3 +105,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [LogRequestController::class, 'destroy'])->name('log-request.destroy');
     });
 });
+
+use App\Http\Controllers\ReportController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/report/generate', [ReportController::class, 'generateAndSendReport'])->name('report.generate');
+});
