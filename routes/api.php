@@ -111,3 +111,12 @@ use App\Http\Controllers\ReportController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/report/generate', [ReportController::class, 'generateAndSendReport'])->name('report.generate');
 });
+
+use App\Http\Controllers\FileController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/user/photo/upload', [FileController::class, 'upload']);
+    Route::delete('/user/photo/delete', [FileController::class, 'delete']);
+    Route::get('/user/photo/download', [FileController::class, 'download']);
+    Route::post('/export/photos', [FileController::class, 'exportPhotos'])->name('export.photos');
+});

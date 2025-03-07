@@ -26,7 +26,8 @@ class UserController extends Controller
                         'id' => $role->id,
                         'name' => $role->name,
                         'code' => $role->code,
-                    ])->toArray()
+                    ])->toArray(),
+                    avatar_url: $user->avatar_url
                 );
             })->toArray()
         ));
@@ -51,7 +52,8 @@ class UserController extends Controller
                 username: $user->username,
                 email: $user->email,
                 birthday: $user->birthday,
-                roles: []
+                roles: [],
+                avatar_url: $user->avatar_url
             ), 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -77,7 +79,8 @@ class UserController extends Controller
                 'id' => $role->id,
                 'name' => $role->name,
                 'code' => $role->code,
-            ])->toArray()
+            ])->toArray(),
+            avatar_url: $user->avatar_url
         ));
     }
     public function update(UpdateUserRequest $request, $id): JsonResponse
@@ -105,7 +108,8 @@ class UserController extends Controller
                     'id' => $role->id,
                     'name' => $role->name,
                     'code' => $role->code,
-                ])->toArray()
+                ])->toArray(),
+                avatar_url: $user->avatar_url
             ));
         } catch (\Exception $e) {
             DB::rollBack();

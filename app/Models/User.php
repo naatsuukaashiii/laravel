@@ -4,7 +4,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Log;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
@@ -18,6 +17,7 @@ class User extends Authenticatable
         'two_factor_enabled',
         'two_factor_code',
         'two_factor_expires_at',
+        'avatar_url',
     ];
     protected $hidden = [
         'password',
@@ -81,5 +81,9 @@ class User extends Authenticatable
     public function logRequests()
     {
         return $this->hasMany(LogRequest::class, 'user_id');
+    }
+    public function file()
+    {
+        return $this->hasOne(File::class);
     }
 }
