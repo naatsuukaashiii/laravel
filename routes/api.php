@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         Route::delete('/{id}/soft', [UserController::class, 'softDelete'])->name('user.soft-delete');
         Route::post('/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
+        Route::post('/export', [UserController::class, 'exportUsers'])->name('user.export');
+        Route::post('/import', [UserController::class, 'importUsers'])->name('user.import');
     });
 
     Route::prefix('ref/user/{userId}/role')->group(function () {
@@ -47,6 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
         Route::delete('/{id}/soft', [RoleController::class, 'softDelete'])->name('role.soft-delete');
         Route::post('/{id}/restore', [RoleController::class, 'restore'])->name('role.restore');
+        Route::post('/export', [RoleController::class, 'exportRoles'])->name('role.export');
+        Route::post('/import', [RoleController::class, 'importRoles'])->name('role.import');
     });
 
     Route::prefix('ref/role/{role}/permission')->group(function () {

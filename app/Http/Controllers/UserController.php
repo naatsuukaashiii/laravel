@@ -7,6 +7,9 @@ use App\DTO\UserDTO;
 use App\DTO\UserCollectionDTO;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use App\Services\ExportService;
+use App\Services\ImportService;
+use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function index(): JsonResponse
@@ -182,5 +185,23 @@ class UserController extends Controller
             \Log::error('Error restoring user', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Failed to restore user'], 500);
         }
+    }
+    public function exportUsers(ExportService $exportService)
+    {
+        if (!auth()->user()->hasPermission('export-users')) {
+            return response()->json(['message' => 'Permission denied'], 403);
+        }
+        $filePath = $exportService->exportUsers();
+        return response()->download($filePath)->deleteFileAfterSend(true);
+    }
+    public function importUsers(Request $request, ImportService $importService)
+    {
+        if (!auth()->user()->hasPermission('import-users')) {
+            return response()->json(['message' => 'Permission denied'], 403);
+        }
+        $file = $request->file('file');
+        $mode = $request->input('mode', 'add');
+        $results = $importService->importUsers($file->getPathname(), $mode);
+        return response()->json(['results' => $results]);
     }
 }
