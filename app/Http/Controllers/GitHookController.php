@@ -67,3 +67,27 @@ class GitHookController extends Controller
         Log::info("Pulled latest changes from repository");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

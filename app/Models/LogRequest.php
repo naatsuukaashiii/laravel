@@ -27,3 +27,16 @@ class LogRequest extends Model
         'created_at' => 'datetime',
     ];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+//

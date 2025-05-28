@@ -105,3 +105,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [LogRequestController::class, 'destroy'])->name('log-request.destroy');
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
