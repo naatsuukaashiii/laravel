@@ -17,8 +17,8 @@ class GitHookController extends Controller
             }
             $ip = $request->ip();
             Log::info("Git hook triggered by IP: $ip");
-            $this->switchToMainBranch();
             $this->discardChanges();
+            $this->switchToMainBranch();
             $this->pullLatestChanges();
             return response()->json(['message' => 'Project updated successfully'], 200);
         } catch (\Exception $e) {
@@ -91,4 +91,3 @@ class GitHookController extends Controller
 
 
 
-//
