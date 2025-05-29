@@ -12,16 +12,3 @@ class ChangeLogCollectionDTO
         ];
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//
