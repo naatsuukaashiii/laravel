@@ -136,7 +136,7 @@ class GenerateReportJob implements ShouldQueue
             return;
         }
         try {
-            $email = 'kargaeva05@mail.ru';
+            $email = 'artem.gvozdev.89@bk.ru';
             Mail::to($email)->send(new ReportMail($filePath, $fileName));
             Log::info("Report sent to $email");
             if (file_exists($filePath)) {
