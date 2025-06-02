@@ -46,7 +46,8 @@ class ImportService
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $results[] = "Запись №" . ($index + 1) . " не удалось добавить/обновить. Неизвестная ошибка.";
+            $results[] = "Запись №" . ($index + 1) . " не удалось добавить/обновить. Ошибка: " . $e->getMessage();
+
         }
         return $results;
     }
