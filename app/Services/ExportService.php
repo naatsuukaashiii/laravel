@@ -4,50 +4,88 @@ use App\Models\User;
 use App\Models\Role;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
+
 class ExportService
 {
-    public function exportUsers()
+    /**
+     * Export users to Excel file
+     *
+     * @return string Path to the exported file
+     */
+    public function exportUsers(): string
     {
         $users = User::all();
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Username');
-        $sheet->setCellValue('C1', 'Email');
-        $sheet->setCellValue('D1', 'Birthday');
-        $row = 2;
-        foreach ($users as $user) {
-            $sheet->setCellValue('A' . $row, $user->id);
-            $sheet->setCellValue('B' . $row, $user->username);
-            $sheet->setCellValue('C' . $row, $user->email);
-            $sheet->setCellValue('D' . $row, $user->birthday);
-            $row++;
-        }
-        $writer = new Xlsx($spreadsheet);
-        $filePath = storage_path('app/exports/users.xlsx');
-        $writer->save($filePath);
-        return $filePath;
+        $config = Config::get('export.users');
+        
+        return $this->exportToExcel(
+            data: $users,
+            columns: $config['columns'],
+            filePath: $config['file_path']
+        );
     }
-    public function exportRoles()
+
+    /**
+     * Export roles to Excel file
+     *
+     * @return string Path to the exported file
+     */
+    public function exportRoles(): string
     {
         $roles = Role::all();
+        $config = Config::get('export.roles');
+        
+        return $this->exportToExcel(
+            data: $roles,
+            columns: $config['columns'],
+            filePath: $config['file_path']
+        );
+    }
+
+    /**
+     * Generic method to export data to Excel
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $data
+     * @param array $columns
+     * @param string $filePath
+     * @return string
+     */
+    protected function exportToExcel($data, array $columns, string $filePath): string
+    {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Name');
-        $sheet->setCellValue('C1', 'Code');
-        $sheet->setCellValue('D1', 'Description');
+        
+        // Set headers
+        $column = 'A';
+        foreach ($columns as $field => $header) {
+            $sheet->setCellValue($column . '1', $header);
+            $column++;
+        }
+
+        // Fill data
         $row = 2;
-        foreach ($roles as $role) {
-            $sheet->setCellValue('A' . $row, $role->id);
-            $sheet->setCellValue('B' . $row, $role->name);
-            $sheet->setCellValue('C' . $row, $role->code);
-            $sheet->setCellValue('D' . $row, $role->description);
+        foreach ($data as $item) {
+            $column = 'A';
+            foreach ($columns as $field => $header) {
+                $value = $item->$field;
+                if ($value instanceof \DateTime) {
+                    $value = $value->format('Y-m-d');
+                }
+                $sheet->setCellValue($column . $row, $value);
+                $column++;
+            }
             $row++;
         }
+
+        // Ensure directory exists
+        $fullPath = storage_path('app/' . $filePath);
+        Storage::makeDirectory(dirname($filePath));
+
+        // Save file
         $writer = new Xlsx($spreadsheet);
-        $filePath = storage_path('app/exports/roles.xlsx');
-        $writer->save($filePath);
-        return $filePath;
+        $writer->save($fullPath);
+
+        return $fullPath;
     }
 }
